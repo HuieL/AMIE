@@ -1,0 +1,17 @@
+{
+  "version": "amie-global-selection-v1",
+  "status": "one frozen and one trained configuration across every main-table cell; no per-cell substitutions",
+  "frozen": {
+    "model": "Qwen3-8B",
+    "provider": "Friday",
+    "temperature": 0,
+    "max_tokens": 8192
+  },
+  "trained": {
+    "model": "Qwen3-8B",
+    "model_env": "AMIE_POLICY_MODEL",
+    "training_contract": "src/runs/configs/training.json",
+    "seeds": [20260908, 20260909, 20260910],
+    "checkpoint": "final two-epoch adapter from each seed; preserve all three"
+  }
+}

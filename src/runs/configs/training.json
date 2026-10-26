@@ -1,0 +1,47 @@
+{
+  "version": "amie-native-teacher-class-balanced-v1",
+  "status": "fixed_before_student_fitting",
+  "training": {
+    "teacher_host": "static_bm25",
+    "teacher_source": "GPT-5.6-Sol teacher masks over the native BM25 top ten",
+    "fit_groups": ["conv-30", "conv-41", "conv-42", "conv-44", "conv-48", "conv-49"],
+    "expected_questions": 902,
+    "model_env": "AMIE_POLICY_MODEL",
+    "actor": "CumulativeMaskActor",
+    "initialization": "fresh pretrained backbone plus new LoRA and ten-slot head",
+    "seeds": [20260908, 20260909, 20260910],
+    "epochs": 2,
+    "optimizer": "AdamW",
+    "lr": 1e-05,
+    "weight_decay": 0,
+    "gradient_clip": 1,
+    "loss": "normalized inverse-frequency weighted binary cross entropy over valid slots; mean per observation",
+    "lora_rank": 8,
+    "lora_alpha": 16,
+    "lora_targets": ["q_proj", "v_proj"],
+    "dropout": 0,
+    "batch_size": 1,
+    "max_context_tokens": 4096,
+    "selection": "final checkpoint only; no validation-based stopping or selection",
+    "class_weighting": {
+      "labels": {"keep": 0, "suppress": 1},
+      "counts_source": "same 902 fit observations only",
+      "keep_slots": 3676,
+      "suppress_slots": 5344,
+      "keep_weight": 1.2268770402611535,
+      "suppress_weight": 0.843937125748503,
+      "normalization": "Mean slot weight over full fit dataset equals one"
+    }
+  },
+  "policy": {
+    "strength": 0.5,
+    "kappa": 3,
+    "prior_weight": 0,
+    "pool": 100,
+    "feedback": "unmodified native host top10",
+    "observation": "query first300 and memory first200 characters",
+    "threshold": 0.5,
+    "order": "released per-conversation question order",
+    "timing": "seal answer contexts before updating for future queries"
+  }
+}

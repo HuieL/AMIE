@@ -1,0 +1,15 @@
+# dataset payloads (restore with dataset/*.sh)
+dataset/locomo/locomo/
+dataset/groupmem/GroupMemBench/
+dataset/membench/Membench/
+
+# experiment artifacts
+results/
+
+# secrets
+.env
+
+# python
+__pycache__/
+*.pyc
+.venv/
