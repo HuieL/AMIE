@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 768 312" width="768" height="312" role="img" aria-labelledby="amie-pipeline-title amie-pipeline-desc">
+  <title id="amie-pipeline-title">AMIE reproduction pipeline</title>
+  <desc id="amie-pipeline-desc">Five shell-entry stages reproduce the paper: fetch the datasets, run the main tables for the off, count and frozen arms, train the three LoRA students, rerun the main tables to score the trained arm, then run the CPU-only replay controls, which gate on the published recall numbers. Artifacts land in results/.</desc>
+  <style>
+    :root {
+      --paper: #f5f5f5; --node: #ffffff; --ink: #2d3142; --muted: #4f5d75;
+      --soft: #5a6580; --accent: #bf4520; --atint: rgba(191,69,32,.08);
+      --store: rgba(45,49,66,.05); --input: rgba(79,93,117,.10);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #2d3142; --node: #393e53; --ink: #f5f5f5; --muted: #bfc0c0;
+        --soft: #949eb2; --accent: #f08a59; --atint: rgba(240,138,89,.10);
+        --store: rgba(245,245,245,.05); --input: rgba(191,192,192,.12);
+      }
+    }
+    .bg { fill: var(--paper); }
+    .bx-node { fill: var(--node); stroke: var(--ink); }
+    .bx-focal { fill: var(--atint); stroke: var(--accent); stroke-width: 1.2; }
+    .bx-store { fill: var(--store); stroke: var(--muted); }
+    .bx-input { fill: var(--input); stroke: var(--soft); }
+    .nm { font: 600 12px 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif; fill: var(--ink); }
+    .sl { font: 400 9px 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; fill: var(--soft); letter-spacing: .04em; }
+    .eb { font: 500 8px 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; fill: var(--soft); letter-spacing: .18em; }
+    .al { font: 400 8px 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; fill: var(--muted); letter-spacing: .06em; }
+    .co { font: italic 400 13px 'Instrument Serif', Georgia, serif; fill: var(--soft); }
+    .lg { font: 400 8px 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace; fill: var(--soft); letter-spacing: .06em; }
+    .mk { fill: var(--paper); }
+    .ar { stroke: var(--muted); stroke-width: 1; fill: none; }
+  </style>
+  <defs>
+    <marker id="amie-pipeline-am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="768" height="312"/>
+  <line class="ar" x1="136" y1="96" x2="172" y2="96" marker-end="url(#amie-pipeline-am)"/>
+  <rect class="mk" x="138" y="75" width="36" height="14" rx="2"/>
+  <text class="al" x="156" y="85" text-anchor="middle">CORPUS</text>
+
+  <line class="ar" x1="288" y1="96" x2="324" y2="96" marker-end="url(#amie-pipeline-am)"/>
+  <rect class="mk" x="290" y="75" width="32" height="14" rx="2"/>
+  <text class="al" x="306" y="85" text-anchor="middle">MASKS</text>
+
+  <line class="ar" x1="440" y1="96" x2="476" y2="96" marker-end="url(#amie-pipeline-am)"/>
+  <rect class="mk" x="442" y="75" width="28" height="14" rx="2"/>
+  <text class="al" x="456" y="85" text-anchor="middle">LORA</text>
+
+  <line class="ar" x1="592" y1="96" x2="628" y2="96" marker-end="url(#amie-pipeline-am)"/>
+  <rect class="mk" x="594" y="75" width="36" height="14" rx="2"/>
+  <text class="al" x="612" y="85" text-anchor="middle">SCORES</text>
+
+  <path class="ar" d="M688,128 L688,196" marker-end="url(#amie-pipeline-am)"/>
+  <rect class="mk" x="696" y="157" width="36" height="14" rx="2"/>
+  <text class="al" x="714" y="167" text-anchor="middle">TABLES</text>
+  <text class="eb" x="24" y="56">STEP 1</text>
+  <rect class="bx-input" x="24" y="64" width="112" height="64" rx="6"/>
+  <text class="nm" x="80" y="92" text-anchor="middle">Fetch datasets</text>
+  <text class="sl" x="80" y="110" text-anchor="middle">BASH DATASET/*.SH</text>
+
+  <text class="eb" x="176" y="56">STEP 2</text>
+  <rect class="bx-node" x="176" y="64" width="112" height="64" rx="6"/>
+  <text class="nm" x="232" y="92" text-anchor="middle">Main tables I</text>
+  <text class="sl" x="232" y="110" text-anchor="middle">OFF·COUNT·FROZEN</text>
+
+  <text class="eb" x="328" y="56">STEP 3</text>
+  <rect class="bx-node" x="328" y="64" width="112" height="64" rx="6"/>
+  <text class="nm" x="384" y="92" text-anchor="middle">Train policy</text>
+  <text class="sl" x="384" y="110" text-anchor="middle">3-SEED LORA·GPU</text>
+
+  <text class="eb" x="480" y="56">STEP 4</text>
+  <rect class="bx-node" x="480" y="64" width="112" height="64" rx="6"/>
+  <text class="nm" x="536" y="92" text-anchor="middle">Main tables II</text>
+  <text class="sl" x="536" y="110" text-anchor="middle">+ TRAINED ARM</text>
+
+  <text class="eb" x="632" y="56">STEP 5</text>
+  <rect class="bx-focal" x="632" y="64" width="112" height="64" rx="6"/>
+  <text class="nm" x="688" y="92" text-anchor="middle">Controls</text>
+  <text class="sl" x="688" y="110" text-anchor="middle">P620–626·CPU·GATE</text>
+
+  <rect class="bx-store" x="560" y="200" width="160" height="56" rx="6"/>
+  <text class="nm" x="640" y="224" text-anchor="middle">results/</text>
+  <text class="sl" x="640" y="242" text-anchor="middle">TABLES + STUDY ARTIFACTS</text>
+  <text class="co" x="24" y="214">the replay controls first reproduce the published gate:</text>
+  <text class="co" x="24" y="232">LoCoMo evidence Recall@10, index off 51.94 versus count 53.41</text>
+  <rect class="bx-input" x="24" y="280" width="16" height="16" rx="2"/>
+  <text class="lg" x="48" y="292">FETCH</text>
+  <rect class="bx-node" x="104" y="280" width="16" height="16" rx="2"/>
+  <text class="lg" x="128" y="292">PIPELINE STAGE</text>
+  <rect class="bx-focal" x="232" y="280" width="16" height="16" rx="2"/>
+  <text class="lg" x="256" y="292">GATED, CPU-ONLY</text>
+  <rect class="bx-store" x="372" y="280" width="16" height="16" rx="2"/>
+  <text class="lg" x="396" y="292">ARTIFACTS</text>
+</svg>

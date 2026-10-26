@@ -1,33 +1,30 @@
 # AMIE: Adaptive Memory Index Evolution
 
 Official code for the AMIE paper (*Adaptive Memory Index Evolution for
-Agents*, ICLR 2027 submission). AMIE gives a
-retrieval index a persistent, per-entry **access state**: each time an entry
-is returned in the host retriever's native top-k feedback, its exposure count
-increments, and the operator rescores future candidates by
+Agents*, ICLR 2027 submission).
+
+<p align="center">
+  <img src="assets/workflow.svg" alt="AMIE workflow: the host retriever's candidates are rescored by the persistent access state, the answer context is sealed, the answer is generated, and only then does the access policy commit the feedback mask that updates the state" width="768">
+</p>
+
+AMIE gives a retrieval index a persistent, per-entry **access state** and
+rescores every candidate by
 
     s(q, i) = \hat\sigma(q, i) * (1 - \lambda_p * u_i),   u_i = n_i / (n_i + \kappa)
 
-with `\lambda_p = 0.5`, `\kappa = 3`, a candidate pool of 100, and native
-top-10 feedback. The answer context of every question is **sealed before** the
-feedback update is committed, so decisions never edit their own evidence.
-Three access policies are compared:
-
-- **count**: the deterministic all-ones rule (every feedback entry counts);
-- **frozen**: a prompt-guided `Qwen3-8B` emits per-entry suppress/keep
-  verdicts from a structured observation of the query and the retrieved
-  candidates, without task-specific fine-tuning;
-- **trained**: a LoRA student (`Qwen3-8B`, rank 8) distilled with
-  class-balanced BCE from teacher (`GPT-5.6-Sol`) verdicts collected on six
-  LoCoMo training conversations (902 rows), evaluated at three fixed seeds.
+with `\lambda_p = 0.5`, `\kappa = 3`. The answer context of every question is
+**sealed before** the feedback update is committed, so decisions never edit
+their own evidence. Three access policies are compared: **count** (the
+deterministic all-ones rule), **frozen** (prompt-guided `Qwen3-8B`), and
+**trained** (a LoRA student on `Qwen3-8B` distilled with class-balanced BCE
+from `GPT-5.6-Sol` teacher verdicts, three fixed seeds). A static variant of
+the figure above lives at [assets/method.svg](assets/method.svg).
 
 Benchmarks: **LoCoMo** (official category F1 + evidence Recall@10),
 **GroupMemBench** (upstream GPT-5 judge), and **MemBench** (chronological
-retrieve-before-ingest adapter, native MCQ choice accuracy). The replay
+retrieve-before-ingest adapter, native MCQ choice accuracy). Seven replay
 control studies (traffic injection, sufficiency, exposure, evolvability,
-oracle ceilings, index swap, granularity) run on CPU with zero API calls and
-must first reproduce the published replay gate (Recall@10: off 51.94, count
-53.41 on the 1,527 evidence-valid LoCoMo questions).
+oracle ceilings, index swap, granularity) run on CPU with zero API calls.
 
 ## Layout
 
@@ -65,6 +62,10 @@ Create a `.env` at the repo root with the Friday credentials
 (`FRIDAY_API_KEY=...`, `FRIDAY_BASE_URL=...`); it is gitignored.
 
 ## Reproduction
+
+<p align="center">
+  <img src="assets/pipeline.svg" alt="Reproduction pipeline: fetch the datasets, run the main tables for the off, count and frozen arms, train the three LoRA students, rerun the main tables to score the trained arm, then run the gated CPU-only replay controls" width="768">
+</p>
 
     bash scripts/run_main_tables.sh      # off/count/frozen arms, all datasets
     bash scripts/train_policy.sh         # 3-seed LoRA students (one GPU)
